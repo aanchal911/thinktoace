@@ -1,128 +1,373 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // YouTube API Integration Code
-    const API_KEY = "YOUR_YOUTUBE_API_KEY"; // Replace with your actual API key
-  
-    // Query selectors for search elements (if you removed the select, ignore it)
-    const searchInput = document.querySelector(".search-bar input");
-    // If you removed the dropdown from your HTML, comment out the following line:
-    // const categorySelect = document.querySelector(".search-bar select");
-    const searchBtn = document.querySelector(".search-bar button");
-  
-    // Create and append a container for video results
-    const videoContainer = document.createElement("div");
-    videoContainer.id = "videoContainer";
-    const heroContainer = document.querySelector(".hero .container");
-    if (heroContainer) {
-      heroContainer.appendChild(videoContainer);
-    } else {
-      console.error("Hero container not found!");
-    }
-  
-    // Event listener for search button
-    searchBtn.addEventListener("click", () => {
-      const query = searchInput.value.trim();
-      if (!query) {
-        alert("Please enter a search term.");
-        return;
-      }
-      
-      // If you removed the dropdown, simply fetch videos:
-      fetchVideos(query);
-      
-      /* 
-      // If you still have a dropdown and want to check its value:
-      const category = categorySelect ? categorySelect.value : "Videos";
-      if (category === "Videos") {
-        fetchVideos(query);
-      } else {
-        alert("Feature for " + category + " is coming soon!");
-      }
-      */
+// ThinkToAce - Modern JavaScript with StudyMate AI Integration
+
+class StudyMate {
+  constructor() {
+    this.apiUrl = 'http://localhost:5000/api';
+    this.chatMessages = document.getElementById('chatMessages');
+    this.chatInput = document.getElementById('chatInput');
+    this.sendButton = document.getElementById('sendMessage');
+    this.modal = new bootstrap.Modal(document.getElementById('studyMateModal'));
+    
+    this.initializeEventListeners();
+  }
+
+  initializeEventListeners() {
+    // Send message on button click
+    this.sendButton?.addEventListener('click', () => this.sendMessage());
+    
+    // Send message on Enter key
+    this.chatInput?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') this.sendMessage();
     });
-  
-    // Function to fetch videos from YouTube API
-    async function fetchVideos(query) {
-      try {
-        const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(query)}&key=${API_KEY}`
-        );
-        const data = await response.json();
-        // Debug: Log the data to the console
-        console.log("YouTube API response:", data);
-        displayVideos(data.items);
-      } catch (error) {
-        console.error("Error fetching videos:", error);
-      }
-    }
-  
-    // Function to display fetched videos
-    function displayVideos(videos) {
-      videoContainer.innerHTML = ""; // Clear previous results
-      videos.forEach(video => {
-        const videoId = video.id.videoId;
-        const title = video.snippet.title;
-        const thumbnail = video.snippet.thumbnails.medium.url;
-  
-        const videoElement = `
-          <div class="video-card">
-            <img src="${thumbnail}" alt="${title}" onclick="playVideo('${videoId}')">
-            <p>${title}</p>
-          </div>
-        `;
-        videoContainer.innerHTML += videoElement;
+  }
+
+  async sendMessage() {
+    const message = this.chatInput.value.trim();
+    if (!message) return;
+
+    // Add user message to chat
+    this.addMessage(message, 'user');
+    this.chatInput.value = '';
+
+    // Show typing indicator
+    this.showTyping();
+
+    try {
+      const response = await fetch(`${this.apiUrl}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
       });
+
+      const data = await response.json();
+      
+      // Remove typing indicator
+      this.hideTyping();
+      
+      // Add bot response
+      this.addMessage(data.response, 'bot');
+      
+      // Add links if provided
+      if (data.links && data.links.length > 0) {
+        this.addLinks(data.links);
+      }
+    } catch (error) {
+      this.hideTyping();
+      this.addMessage('Sorry, I encountered an error. Please try again later.', 'bot');
+      console.error('Chat error:', error);
     }
-  
-    // Function to play a selected video in an iframe
-    window.playVideo = function(videoId) { // Exposed to window for onclick
-      videoContainer.innerHTML = `
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" 
-        frameborder="0" allowfullscreen></iframe>
-      `;
+  }
+
+  addMessage(content, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    avatar.innerHTML = sender === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.innerHTML = this.formatMessage(content);
+    
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(messageContent);
+    
+    this.chatMessages.appendChild(messageDiv);
+    this.scrollToBottom();
+  }
+
+  addLinks(links) {
+    const linksDiv = document.createElement('div');
+    linksDiv.className = 'message bot-message';
+    
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    avatar.innerHTML = '<i class="fas fa-robot"></i>';
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    
+    let linksHtml = '<p><strong>Here are some helpful resources:</strong></p><ul>';
+    links.forEach(link => {
+      linksHtml += `<li><a href="${link.url}" target="_blank">${link.title}</a></li>`;
+    });
+    linksHtml += '</ul>';
+    
+    messageContent.innerHTML = linksHtml;
+    linksDiv.appendChild(avatar);
+    linksDiv.appendChild(messageContent);
+    
+    this.chatMessages.appendChild(linksDiv);
+    this.scrollToBottom();
+  }
+
+  formatMessage(content) {
+    // Convert URLs to clickable links
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return content.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+  }
+
+  showTyping() {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot-message typing-indicator';
+    typingDiv.innerHTML = `
+      <div class="message-avatar">
+        <i class="fas fa-robot"></i>
+      </div>
+      <div class="message-content">
+        <div class="loading"></div> StudyMate is thinking...
+      </div>
+    `;
+    this.chatMessages.appendChild(typingDiv);
+    this.scrollToBottom();
+  }
+
+  hideTyping() {
+    const typingIndicator = this.chatMessages.querySelector('.typing-indicator');
+    if (typingIndicator) {
+      typingIndicator.remove();
+    }
+  }
+
+  scrollToBottom() {
+    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+  }
+
+  open() {
+    this.modal.show();
+  }
+}
+
+// Initialize StudyMate
+let studyMate;
+
+// Global function to open StudyMate
+function openStudyMate() {
+  if (!studyMate) {
+    studyMate = new StudyMate();
+  }
+  studyMate.open();
+}
+
+// Dark Mode Toggle
+class ThemeManager {
+  constructor() {
+    this.darkModeToggle = document.getElementById('darkModeToggle');
+    this.body = document.body;
+    this.isDark = localStorage.getItem('darkMode') === 'true';
+    
+    this.init();
+  }
+
+  init() {
+    // Set initial theme
+    if (this.isDark) {
+      this.enableDarkMode();
+    }
+
+    // Toggle event listener
+    this.darkModeToggle?.addEventListener('click', () => this.toggle());
+  }
+
+  toggle() {
+    this.isDark = !this.isDark;
+    localStorage.setItem('darkMode', this.isDark);
+    
+    if (this.isDark) {
+      this.enableDarkMode();
+    } else {
+      this.disableDarkMode();
+    }
+  }
+
+  enableDarkMode() {
+    this.body.classList.add('dark-mode');
+    this.darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+  }
+
+  disableDarkMode() {
+    this.body.classList.remove('dark-mode');
+    this.darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  }
+}
+
+// Smooth Scrolling for Navigation Links
+class SmoothScroll {
+  constructor() {
+    this.navLinks = document.querySelectorAll('a[href^="#"]');
+    this.init();
+  }
+
+  init() {
+    this.navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  }
+}
+
+// Navbar Scroll Effect
+class NavbarEffect {
+  constructor() {
+    this.navbar = document.querySelector('.glass-nav');
+    this.init();
+  }
+
+  init() {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        this.navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+        this.navbar.style.backdropFilter = 'blur(20px)';
+      } else {
+        this.navbar.style.background = 'rgba(255, 255, 255, 0.1)';
+        this.navbar.style.backdropFilter = 'blur(10px)';
+      }
+    });
+  }
+}
+
+// Intersection Observer for Animations
+class AnimationObserver {
+  constructor() {
+    this.observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
     };
-  
-    /* Additional Code (e.g., Dark Mode Toggle & 3D Background Animation) */
-    // Dark mode toggle functionality
-    const darkModeToggle = document.getElementById("darkModeToggle");
-    if (darkModeToggle) {
-      darkModeToggle.addEventListener("click", function () {
-        document.body.classList.toggle("dark-mode");
+    this.init();
+  }
+
+  init() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, this.observerOptions);
+
+    // Observe elements with animation classes
+    document.querySelectorAll('.feature-card, .hero-content').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'all 0.6s ease';
+      observer.observe(el);
+    });
+  }
+}
+
+// Particle System for Background
+class ParticleSystem {
+  constructor() {
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.particles = [];
+    this.particleCount = 50;
+    
+    this.init();
+  }
+
+  init() {
+    this.canvas.style.position = 'fixed';
+    this.canvas.style.top = '0';
+    this.canvas.style.left = '0';
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
+    this.canvas.style.zIndex = '-1';
+    this.canvas.style.pointerEvents = 'none';
+    
+    document.body.appendChild(this.canvas);
+    
+    this.resize();
+    this.createParticles();
+    this.animate();
+    
+    window.addEventListener('resize', () => this.resize());
+  }
+
+  resize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  }
+
+  createParticles() {
+    for (let i = 0; i < this.particleCount; i++) {
+      this.particles.push({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.5 + 0.2
       });
     }
-  
-    // Initialize 3D background animation using Three.js (if you have a canvas with id "bgAnimation")
-    function init3DBackground() {
-      const canvas = document.getElementById('bgAnimation');
-      if (!canvas) return; // Skip if canvas is not present
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  animate() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    this.particles.forEach(particle => {
+      particle.x += particle.vx;
+      particle.y += particle.vy;
       
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.z = 5;
+      if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+      if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
       
-      // Example: Rotating wireframe cube
-      const geometry = new THREE.BoxGeometry();
-      const material = new THREE.MeshBasicMaterial({ color: 0xff9500, wireframe: true });
-      const cube = new THREE.Mesh(geometry, material);
-      scene.add(cube);
-      
-      function animate() {
-        requestAnimationFrame(animate);
-        cube.rotation.x += 0.005;
-        cube.rotation.y += 0.005;
-        renderer.render(scene, camera);
+      this.ctx.beginPath();
+      this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`;
+      this.ctx.fill();
+    });
+    
+    requestAnimationFrame(() => this.animate());
+  }
+}
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize AOS (Animate On Scroll)
+  if (typeof AOS !== 'undefined') {
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true
+    });
+  }
+
+  // Initialize all components
+  new ThemeManager();
+  new SmoothScroll();
+  new NavbarEffect();
+  new AnimationObserver();
+  new ParticleSystem();
+
+  // Add loading animation to buttons
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (!this.classList.contains('loading')) {
+        this.classList.add('loading');
+        setTimeout(() => this.classList.remove('loading'), 2000);
       }
-      
-      animate();
-      
-      // Handle window resize
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-    }
-    init3DBackground();
+    });
   });
-  
+});
+
+// Service Worker Registration (for PWA capabilities)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => console.log('SW registered'))
+      .catch(error => console.log('SW registration failed'));
+  });
+}
