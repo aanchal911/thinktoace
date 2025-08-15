@@ -1,3 +1,15 @@
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
 /* Modern ThinkToAce Styles */
 :root {
   --primary-color: #6366f1;
@@ -12,7 +24,7 @@
   --text-secondary: #6b7280;
   --border-color: #e5e7eb;
   --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  --gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
 }
 
 * {
@@ -24,10 +36,14 @@
 body {
   font-family: 'Inter', sans-serif;
   line-height: 1.6;
-  color: var(--text-primary);
-  background: var(--light-color);
+  color: #1f2937;
+  background: #f8fafc;
   overflow-x: hidden;
   transition: all 0.3s ease;
+  min-height: 100vh;
+  position: relative;
+  margin: 0;
+  padding: 0;
 }
 
 body.dark-mode {
@@ -66,6 +82,7 @@ body.dark-mode .nav-link {
   height: 100%;
   z-index: -1;
   background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+  pointer-events: none;
 }
 
 .floating-shapes {
@@ -94,10 +111,11 @@ body.dark-mode .nav-link {
 
 /* Glass Navigation */
 .glass-nav {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+  z-index: 1000;
 }
 
 .navbar-brand {
@@ -123,7 +141,25 @@ body.dark-mode .nav-link {
   display: flex;
   align-items: center;
   position: relative;
-  color: white;
+  color: white !important;
+  z-index: 10;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 20;
+}
+
+.hero-title {
+  color: white !important;
+  z-index: 20;
+  position: relative;
+}
+
+.hero-subtitle {
+  color: rgba(255, 255, 255, 0.9) !important;
+  z-index: 20;
+  position: relative;
 }
 
 .hero-title {
@@ -154,9 +190,10 @@ body.dark-mode .nav-link {
 }
 
 .btn-primary {
-  background: var(--gradient);
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
   border: none;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  color: white;
 }
 
 .btn-primary:hover {
@@ -361,9 +398,10 @@ body.dark-mode .chat-footer .input-group input::placeholder {
 
 /* Features Section */
 .features-section {
-  background: white;
+  background: white !important;
   position: relative;
-  z-index: 1;
+  z-index: 10;
+  color: #1f2937 !important;
 }
 
 body.dark-mode .features-section {
