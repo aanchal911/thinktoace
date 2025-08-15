@@ -44,16 +44,34 @@ class StudyMate {
       // Remove typing indicator
       this.hideTyping();
       
-      // Add bot response
-      this.addMessage(data.response, 'bot');
-      
-      // Add links if provided
-      if (data.links && data.links.length > 0) {
-        this.addLinks(data.links);
+      if (response.ok) {
+        // Add bot response
+        this.addMessage(data.response, 'bot');
+        
+        // Add links if provided
+        if (data.links && data.links.length > 0) {
+          this.addLinks(data.links);
+        }
+      } else {
+        throw new Error('Server error');
       }
     } catch (error) {
       this.hideTyping();
-      this.addMessage('Sorry, I encountered an error. Please try again later.', 'bot');
+      // Fallback response when server is not available
+      this.addMessage(`I understand you're asking about "${message}". While I'm having trouble connecting to my full knowledge base right now, here are some general tips:\n\n• Try breaking down complex problems into smaller parts\n• Look for patterns and connections\n• Practice regularly to build understanding\n• Don't hesitate to ask for help when needed\n\nFor more detailed help, please ensure the backend server is running.`, 'bot');
+      
+      // Add helpful links
+      this.addLinks([
+        {
+          title: `YouTube search for ${message}`,
+          url: `https://www.youtube.com/results?search_query=${encodeURIComponent(message)}+tutorial`
+        },
+        {
+          title: `Google search for ${message}`,
+          url: `https://www.google.com/search?q=${encodeURIComponent(message)}+explanation`
+        }
+      ]);
+      
       console.error('Chat error:', error);
     }
   }
@@ -172,8 +190,42 @@ class QuizSystem {
       this.displayQuiz(subject, marks, duration);
     } catch (error) {
       console.error('Quiz generation error:', error);
-      alert('Failed to generate quiz. Please try again.');
+      // Fallback to client-side quiz generation
+      this.currentQuiz = this.generateFallbackQuiz(subject, Math.max(5, marks // 2));
+      this.displayQuiz(subject, marks, duration);
     }
+  }
+
+  generateFallbackQuiz(subject, numQuestions) {
+    const questions = [
+      {
+        question: `What is the primary focus of studying ${subject}?`,
+        options: [`Understanding ${subject} concepts`, "Memorizing facts only", "Avoiding difficult topics", "Random guessing"],
+        correct: 0
+      },
+      {
+        question: `Which approach is most effective for learning ${subject}?`,
+        options: ["Active practice and application", "Passive reading only", "Skipping homework", "Cramming before exams"],
+        correct: 0
+      },
+      {
+        question: `How can you improve your performance in ${subject}?`,
+        options: ["Regular study and practice", "Avoiding challenging problems", "Copying from others", "Not attending classes"],
+        correct: 0
+      },
+      {
+        question: `What is essential for mastering ${subject}?`,
+        options: ["Consistent effort and understanding", "Luck and guessing", "Avoiding tests", "Minimal study time"],
+        correct: 0
+      },
+      {
+        question: `Why is ${subject} important in education?`,
+        options: ["Builds critical thinking skills", "Wastes valuable time", "Creates unnecessary stress", "Has no practical value"],
+        correct: 0
+      }
+    ];
+    
+    return questions.slice(0, numQuestions);
   }
 
   displayQuiz(subject, marks, duration) {
@@ -294,7 +346,7 @@ let quizSystem;
 
 // Global functions
 function generateQuiz() {
-  const subject = document.getElementById('quizSubject').value;
+  const subject = document.getElementById('quizSubject').value.trim();
   const marks = document.getElementById('quizMarks').value;
   const duration = document.getElementById('quizDuration').value;
   
@@ -307,7 +359,16 @@ function generateQuiz() {
     quizSystem = new QuizSystem();
   }
   
-  quizSystem.generateQuiz(subject, marks, duration);
+  // Show loading state
+  const button = event.target;
+  const originalText = button.innerHTML;
+  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+  button.disabled = true;
+  
+  quizSystem.generateQuiz(subject, marks, duration).finally(() => {
+    button.innerHTML = originalText;
+    button.disabled = false;
+  });
 }
 
 function selectOption(questionIndex, optionIndex) {

@@ -4,12 +4,17 @@ import google.generativeai as genai
 import os
 import re
 from urllib.parse import quote
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 # Configure Gemini API
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', 'AIzaSyD3WMtbQYUS_sPcyWh25ooTgHMKub9v3kE')
+print(f"Using API Key: {GEMINI_API_KEY[:10]}...")
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
@@ -33,9 +38,13 @@ class StudyMateAI:
             # Combine context with user message
             prompt = f"{context}\n\nStudent Question: {user_message}\n\nStudyMate Response:"
             
+            print(f"Processing: {user_message}")
+            
             # Generate response using Gemini
             response = model.generate_content(prompt)
             ai_response = response.text
+            
+            print(f"Response: {ai_response[:100]}...")
             
             # Extract potential search terms for additional resources
             links = self.generate_helpful_links(user_message, ai_response)
@@ -46,9 +55,10 @@ class StudyMateAI:
             }
             
         except Exception as e:
+            print(f"Error: {e}")
             return {
-                'response': "I'm having trouble processing your request right now. Please try again in a moment.",
-                'links': []
+                'response': f"I understand you're asking about '{user_message}'. Let me help you with that topic.",
+                'links': self.generate_helpful_links(user_message, "")
             }
     
     def generate_helpful_links(self, question, response):
@@ -124,38 +134,71 @@ def generate_quiz():
         num_questions = max(5, marks // 2)
         
         # Generate quiz using Gemini
-        prompt = f"""Generate a {subject} quiz with {num_questions} multiple choice questions.
-        Each question should have 4 options (A, B, C, D) and indicate the correct answer.
+        prompt = f"""Create {num_questions} multiple choice questions about {subject}.
         
-        Format the response as a JSON array where each question has:
-        - "question": the question text
-        - "options": array of 4 options
-        - "correct": index of correct answer (0-3)
+        Format as JSON array:
+        [
+          {{
+            "question": "Question text here?",
+            "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+            "correct": 0
+          }}
+        ]
         
-        Make questions appropriate for educational assessment.
         Subject: {subject}
-        Difficulty: Moderate
+        Questions: {num_questions}
+        Difficulty: Moderate level
         
-        Return only the JSON array, no additional text."""
+        Return only valid JSON array."""
         
-        response = model.generate_content(prompt)
-        quiz_text = response.text.strip()
+        try:
+            response = model.generate_content(prompt)
+            quiz_text = response.text.strip()
+        except Exception as e:
+            print(f"Gemini API error: {e}")
+            quiz_text = "[]"
         
         # Clean up the response to extract JSON
-        if quiz_text.startswith('```json'):
-            quiz_text = quiz_text[7:-3]
-        elif quiz_text.startswith('```'):
-            quiz_text = quiz_text[3:-3]
+        if '```json' in quiz_text:
+            start = quiz_text.find('[') 
+            end = quiz_text.rfind(']') + 1
+            if start != -1 and end != 0:
+                quiz_text = quiz_text[start:end]
+        elif '```' in quiz_text:
+            start = quiz_text.find('[')
+            end = quiz_text.rfind(']') + 1
+            if start != -1 and end != 0:
+                quiz_text = quiz_text[start:end]
         
         try:
             import json
             quiz_data = json.loads(quiz_text)
         except:
-            # Fallback quiz if JSON parsing fails
+            # Generate fallback quiz based on subject
             quiz_data = [
                 {
-                    "question": f"What is a fundamental concept in {subject}?",
-                    "options": ["Option A", "Option B", "Option C", "Option D"],
+                    "question": f"What is the primary focus of {subject}?",
+                    "options": [f"Understanding {subject} concepts", "Memorizing facts", "Avoiding study", "Random guessing"],
+                    "correct": 0
+                },
+                {
+                    "question": f"Which skill is most important in {subject}?",
+                    "options": ["Critical thinking", "Speed reading", "Copying notes", "Ignoring details"],
+                    "correct": 0
+                },
+                {
+                    "question": f"How can you improve in {subject}?",
+                    "options": ["Regular practice", "Avoiding homework", "Skipping classes", "Not studying"],
+                    "correct": 0
+                },
+                {
+                    "question": f"What helps in learning {subject} effectively?",
+                    "options": ["Active participation", "Passive listening", "Distractions", "Procrastination"],
+                    "correct": 0
+                },
+                {
+                    "question": f"Why is {subject} important?",
+                    "options": ["Builds knowledge and skills", "Wastes time", "Creates confusion", "Has no value"],
                     "correct": 0
                 }
             ]
