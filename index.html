@@ -207,6 +207,140 @@
     </div>
   </section>
 
+  <!-- Courses Section -->
+  <section id="courses" class="courses-section py-5">
+    <div class="container">
+      <div class="text-center mb-5" data-aos="fade-up">
+        <h2 class="section-title">Featured Courses</h2>
+        <p class="section-subtitle">Learn from curated video playlists and interactive content</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="course-card">
+            <div class="course-video">
+              <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9agiCUZYRsvtGTXdxkzPyItg" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="course-content">
+              <h4>Python Programming</h4>
+              <p>Complete Python course from basics to advanced concepts</p>
+              <div class="course-meta">
+                <span><i class="fas fa-video"></i> 100+ Videos</span>
+                <span><i class="fas fa-clock"></i> 50+ Hours</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="course-card">
+            <div class="course-video">
+              <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9agwh1XjRt242xIpHhPT2llg" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="course-content">
+              <h4>Web Development</h4>
+              <p>HTML, CSS, JavaScript and modern web technologies</p>
+              <div class="course-meta">
+                <span><i class="fas fa-video"></i> 80+ Videos</span>
+                <span><i class="fas fa-clock"></i> 40+ Hours</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="course-card">
+            <div class="course-video">
+              <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9aiQiOwthuSvinxoflmhRxM3" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="course-content">
+              <h4>Data Science</h4>
+              <p>Machine Learning, AI and Data Analysis with Python</p>
+              <div class="course-meta">
+                <span><i class="fas fa-video"></i> 60+ Videos</span>
+                <span><i class="fas fa-clock"></i> 35+ Hours</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Quiz Section -->
+  <section class="quiz-section py-5">
+    <div class="container">
+      <div class="text-center mb-5" data-aos="fade-up">
+        <h2 class="section-title">AI-Generated Quiz</h2>
+        <p class="section-subtitle">Test your knowledge with personalized quizzes</p>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="quiz-generator" data-aos="fade-up">
+            <div class="quiz-form">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <input type="text" id="quizSubject" class="form-control" placeholder="Subject (e.g., Math, Science)">
+                </div>
+                <div class="col-md-4">
+                  <select id="quizMarks" class="form-select">
+                    <option value="">Select Total Marks</option>
+                    <option value="10">10 Marks</option>
+                    <option value="20">20 Marks</option>
+                    <option value="50">50 Marks</option>
+                    <option value="100">100 Marks</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <select id="quizDuration" class="form-select">
+                    <option value="">Select Duration</option>
+                    <option value="10">10 Minutes</option>
+                    <option value="20">20 Minutes</option>
+                    <option value="30">30 Minutes</option>
+                    <option value="60">60 Minutes</option>
+                  </select>
+                </div>
+              </div>
+              <div class="text-center mt-4">
+                <button class="btn btn-primary btn-lg" onclick="generateQuiz()">
+                  <i class="fas fa-magic"></i> Generate Quiz
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quiz Modal -->
+  <div class="modal fade" id="quizModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content quiz-modal">
+        <div class="modal-header quiz-header">
+          <div class="d-flex align-items-center justify-content-between w-100">
+            <div>
+              <h5 class="modal-title mb-0" id="quizTitle">Quiz</h5>
+              <small class="text-muted" id="quizInfo">Subject • Duration • Marks</small>
+            </div>
+            <div class="quiz-timer">
+              <i class="fas fa-clock"></i>
+              <span id="timer">00:00</span>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body quiz-body">
+          <div id="quizQuestions" class="quiz-questions">
+            <!-- Questions will be loaded here -->
+          </div>
+        </div>
+        <div class="modal-footer quiz-footer">
+          <button class="btn btn-success btn-lg" onclick="submitQuiz()">
+            <i class="fas fa-check"></i> Submit Quiz
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Quick Actions -->
   <section class="quick-actions py-5">
     <div class="container">
@@ -215,6 +349,13 @@
           <h2 class="mb-4">Ready to Start Learning?</h2>
           <div class="d-flex flex-wrap justify-content-center gap-3">
             <button class="btn btn-primary btn-lg" onclick="openStudyMate()">
+              <i class="fas fa-robot"></i> Chat with StudyMate
+            </button>
+            <button class="btn btn-outline-primary btn-lg" onclick="generateQuiz()">
+              <i class="fas fa-question-circle"></i> Take Quiz
+            </button>
+            <button class="btn btn-outline-primary btn-lg">
+              <i class="fas fa-play"></i> Watch CoursesMate()">
               <i class="fas fa-comments"></i> Ask StudyMate
             </button>
             <button class="btn btn-outline-primary btn-lg">

@@ -112,12 +112,71 @@ def chat():
 def health_check():
     return jsonify({'status': 'healthy', 'service': 'StudyMate API'})
 
+@app.route('/api/generate-quiz', methods=['POST'])
+def generate_quiz():
+    try:
+        data = request.get_json()
+        subject = data.get('subject', '')
+        marks = int(data.get('marks', 10))
+        duration = int(data.get('duration', 10))
+        
+        # Calculate number of questions based on marks
+        num_questions = max(5, marks // 2)
+        
+        # Generate quiz using Gemini
+        prompt = f"""Generate a {subject} quiz with {num_questions} multiple choice questions.
+        Each question should have 4 options (A, B, C, D) and indicate the correct answer.
+        
+        Format the response as a JSON array where each question has:
+        - "question": the question text
+        - "options": array of 4 options
+        - "correct": index of correct answer (0-3)
+        
+        Make questions appropriate for educational assessment.
+        Subject: {subject}
+        Difficulty: Moderate
+        
+        Return only the JSON array, no additional text."""
+        
+        response = model.generate_content(prompt)
+        quiz_text = response.text.strip()
+        
+        # Clean up the response to extract JSON
+        if quiz_text.startswith('```json'):
+            quiz_text = quiz_text[7:-3]
+        elif quiz_text.startswith('```'):
+            quiz_text = quiz_text[3:-3]
+        
+        try:
+            import json
+            quiz_data = json.loads(quiz_text)
+        except:
+            # Fallback quiz if JSON parsing fails
+            quiz_data = [
+                {
+                    "question": f"What is a fundamental concept in {subject}?",
+                    "options": ["Option A", "Option B", "Option C", "Option D"],
+                    "correct": 0
+                }
+            ]
+        
+        return jsonify({
+            'quiz': quiz_data,
+            'subject': subject,
+            'marks': marks,
+            'duration': duration
+        })
+        
+    except Exception as e:
+        return jsonify({'error': 'Failed to generate quiz'}), 500
+
 @app.route('/', methods=['GET'])
 def home():
     return jsonify({
         'message': 'StudyMate API is running!',
         'endpoints': {
             'chat': '/api/chat (POST)',
+            'generate-quiz': '/api/generate-quiz (POST)',
             'health': '/api/health (GET)'
         }
     })

@@ -150,6 +150,190 @@ function openStudyMate() {
   studyMate.open();
 }
 
+// Quiz System
+class QuizSystem {
+  constructor() {
+    this.currentQuiz = null;
+    this.timer = null;
+    this.timeLeft = 0;
+    this.modal = new bootstrap.Modal(document.getElementById('quizModal'));
+  }
+
+  async generateQuiz(subject, marks, duration) {
+    try {
+      const response = await fetch('http://localhost:5000/api/generate-quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, marks, duration })
+      });
+      
+      const data = await response.json();
+      this.currentQuiz = data.quiz;
+      this.displayQuiz(subject, marks, duration);
+    } catch (error) {
+      console.error('Quiz generation error:', error);
+      alert('Failed to generate quiz. Please try again.');
+    }
+  }
+
+  displayQuiz(subject, marks, duration) {
+    document.getElementById('quizTitle').textContent = `${subject} Quiz`;
+    document.getElementById('quizInfo').textContent = `${subject} • ${duration} min • ${marks} marks`;
+    
+    const questionsContainer = document.getElementById('quizQuestions');
+    questionsContainer.innerHTML = '';
+    
+    this.currentQuiz.forEach((question, index) => {
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'quiz-question';
+      questionDiv.innerHTML = `
+        <h5>Q${index + 1}. ${question.question}</h5>
+        <div class="quiz-options">
+          ${question.options.map((option, optIndex) => `
+            <div class="quiz-option" onclick="selectOption(${index}, ${optIndex})" data-question="${index}" data-option="${optIndex}">
+              ${String.fromCharCode(65 + optIndex)}. ${option}
+            </div>
+          `).join('')}
+        </div>
+      `;
+      questionsContainer.appendChild(questionDiv);
+    });
+    
+    this.startTimer(duration);
+    this.modal.show();
+  }
+
+  startTimer(duration) {
+    this.timeLeft = duration * 60;
+    this.updateTimerDisplay();
+    
+    this.timer = setInterval(() => {
+      this.timeLeft--;
+      this.updateTimerDisplay();
+      
+      if (this.timeLeft <= 0) {
+        this.submitQuiz();
+      }
+    }, 1000);
+  }
+
+  updateTimerDisplay() {
+    const minutes = Math.floor(this.timeLeft / 60);
+    const seconds = this.timeLeft % 60;
+    document.getElementById('timer').textContent = 
+      `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  submitQuiz() {
+    clearInterval(this.timer);
+    
+    const answers = [];
+    this.currentQuiz.forEach((_, index) => {
+      const selected = document.querySelector(`[data-question="${index}"].selected`);
+      answers.push(selected ? parseInt(selected.dataset.option) : -1);
+    });
+    
+    const score = this.calculateScore(answers);
+    this.showResults(score);
+  }
+
+  calculateScore(answers) {
+    let correct = 0;
+    answers.forEach((answer, index) => {
+      if (answer === this.currentQuiz[index].correct) {
+        correct++;
+      }
+    });
+    
+    const percentage = (correct / this.currentQuiz.length) * 100;
+    return { correct, total: this.currentQuiz.length, percentage };
+  }
+
+  showResults(score) {
+    const questionsContainer = document.getElementById('quizQuestions');
+    questionsContainer.innerHTML = `
+      <div class="text-center">
+        <div class="quiz-result">
+          <h2 class="mb-4">Quiz Completed!</h2>
+          <div class="score-display">
+            <div class="score-circle">
+              <span class="score-percentage">${Math.round(score.percentage)}%</span>
+            </div>
+            <p class="mt-3">You scored ${score.correct} out of ${score.total} questions correctly</p>
+            <div class="result-grade">
+              <span class="badge ${this.getGradeBadge(score.percentage)}">${this.getGrade(score.percentage)}</span>
+            </div>
+          </div>
+          <button class="btn btn-primary mt-4" onclick="closeQuiz()">Close Quiz</button>
+        </div>
+      </div>
+    `;
+    
+    document.querySelector('.quiz-footer').style.display = 'none';
+  }
+
+  getGrade(percentage) {
+    if (percentage >= 90) return 'Excellent';
+    if (percentage >= 80) return 'Very Good';
+    if (percentage >= 70) return 'Good';
+    if (percentage >= 60) return 'Average';
+    return 'Needs Improvement';
+  }
+
+  getGradeBadge(percentage) {
+    if (percentage >= 90) return 'bg-success';
+    if (percentage >= 80) return 'bg-info';
+    if (percentage >= 70) return 'bg-primary';
+    if (percentage >= 60) return 'bg-warning';
+    return 'bg-danger';
+  }
+}
+
+// Initialize Quiz System
+let quizSystem;
+
+// Global functions
+function generateQuiz() {
+  const subject = document.getElementById('quizSubject').value;
+  const marks = document.getElementById('quizMarks').value;
+  const duration = document.getElementById('quizDuration').value;
+  
+  if (!subject || !marks || !duration) {
+    alert('Please fill all fields to generate quiz');
+    return;
+  }
+  
+  if (!quizSystem) {
+    quizSystem = new QuizSystem();
+  }
+  
+  quizSystem.generateQuiz(subject, marks, duration);
+}
+
+function selectOption(questionIndex, optionIndex) {
+  // Remove previous selection
+  document.querySelectorAll(`[data-question="${questionIndex}"]`).forEach(opt => {
+    opt.classList.remove('selected');
+  });
+  
+  // Add selection to clicked option
+  document.querySelector(`[data-question="${questionIndex}"][data-option="${optionIndex}"]`)
+    .classList.add('selected');
+}
+
+function submitQuiz() {
+  if (quizSystem) {
+    quizSystem.submitQuiz();
+  }
+}
+
+function closeQuiz() {
+  if (quizSystem) {
+    quizSystem.modal.hide();
+    document.querySelector('.quiz-footer').style.display = 'block';
+  }
+}
+
 // Dark Mode Toggle
 class ThemeManager {
   constructor() {
@@ -184,11 +368,13 @@ class ThemeManager {
   enableDarkMode() {
     this.body.classList.add('dark-mode');
     this.darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    console.log('Dark mode enabled');
   }
 
   disableDarkMode() {
     this.body.classList.remove('dark-mode');
     this.darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    console.log('Dark mode disabled');
   }
 }
 
@@ -352,13 +538,13 @@ document.addEventListener('DOMContentLoaded', () => {
   new AnimationObserver();
   new ParticleSystem();
 
-  // Add loading animation to buttons
+  // Simple button hover effects only
   document.querySelectorAll('.btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      if (!this.classList.contains('loading')) {
-        this.classList.add('loading');
-        setTimeout(() => this.classList.remove('loading'), 2000);
-      }
+    btn.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-2px)';
+    });
+    btn.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0)';
     });
   });
 });
