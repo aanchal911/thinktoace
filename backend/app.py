@@ -24,42 +24,92 @@ class StudyMateAI:
     
     def generate_response(self, user_message):
         try:
-            # Create context for educational assistance
-            context = """You are StudyMate, an AI learning assistant for ThinkToAce platform. 
-            You help students with:
-            - Solving academic doubts and questions
-            - Explaining complex concepts in simple terms
-            - Providing study tips and learning strategies
-            - Recommending educational resources
+            # Enhanced context for better educational assistance
+            context = """You are StudyMate, an advanced AI learning assistant for ThinkToAce platform. 
             
-            Always be helpful, encouraging, and educational. Keep responses concise but informative.
-            If asked about topics outside education, politely redirect to learning-related topics."""
+            Your expertise includes:
+            - Mathematics (algebra, calculus, geometry, statistics)
+            - Sciences (physics, chemistry, biology, computer science)
+            - Programming (Python, JavaScript, web development, algorithms)
+            - Languages (English, grammar, writing, literature)
+            - Study techniques and learning strategies
+            - Academic guidance and career advice
+            
+            Guidelines:
+            - Provide clear, step-by-step explanations
+            - Use examples and analogies when helpful
+            - Be encouraging and supportive
+            - Ask follow-up questions to ensure understanding
+            - Suggest practical exercises or resources
+            - Keep responses conversational but informative
+            - If unsure, admit it and suggest where to find accurate information
+            
+            Always maintain a friendly, patient, and educational tone."""
+            
+            # Add conversation history for context
+            conversation_context = ""
+            if self.conversation_history:
+                recent_history = self.conversation_history[-4:]  # Last 2 exchanges
+                conversation_context = "\n\nRecent conversation:\n"
+                for entry in recent_history:
+                    conversation_context += f"{entry['role']}: {entry['message']}\n"
             
             # Combine context with user message
-            prompt = f"{context}\n\nStudent Question: {user_message}\n\nStudyMate Response:"
+            prompt = f"{context}{conversation_context}\n\nStudent Question: {user_message}\n\nStudyMate Response:"
             
             print(f"Processing: {user_message}")
             
             # Generate response using Gemini
             response = model.generate_content(prompt)
-            ai_response = response.text
+            ai_response = response.text.strip()
+            
+            # Store conversation history
+            self.conversation_history.append({'role': 'Student', 'message': user_message})
+            self.conversation_history.append({'role': 'StudyMate', 'message': ai_response})
+            
+            # Keep only last 10 exchanges
+            if len(self.conversation_history) > 20:
+                self.conversation_history = self.conversation_history[-20:]
             
             print(f"Response: {ai_response[:100]}...")
             
-            # Extract potential search terms for additional resources
-            links = self.generate_helpful_links(user_message, ai_response)
+            # Generate helpful links
+            youtube_link = f"https://www.youtube.com/results?search_query={quote(user_message + ' tutorial explanation')}"
+            google_link = f"https://www.google.com/search?q={quote(user_message + ' study guide examples')}"
             
             return {
                 'response': ai_response,
-                'links': links
+                'youtube_link': youtube_link,
+                'google_link': google_link
             }
             
         except Exception as e:
             print(f"Error: {e}")
+            fallback_response = self.get_smart_fallback(user_message)
             return {
-                'response': f"I understand you're asking about '{user_message}'. Let me help you with that topic.",
-                'links': self.generate_helpful_links(user_message, "")
+                'response': fallback_response,
+                'youtube_link': f"https://www.youtube.com/results?search_query={quote(user_message + ' tutorial')}",
+                'google_link': f"https://www.google.com/search?q={quote(user_message + ' explanation')}"
             }
+    
+    def get_smart_fallback(self, message):
+        """Provide intelligent fallback responses based on message content"""
+        lower_msg = message.lower()
+        
+        if any(word in lower_msg for word in ['math', 'calculus', 'algebra', 'geometry', 'equation']):
+            return "I'd love to help with mathematics! Try breaking down the problem step-by-step, identify what you know and what you need to find, then apply the relevant formulas or concepts. Would you like me to explain a specific math topic?"
+        
+        elif any(word in lower_msg for word in ['physics', 'chemistry', 'biology', 'science']):
+            return "Science questions are fascinating! For better understanding, try to connect the concept to real-world examples, use diagrams or visual aids, and practice with similar problems. What specific science topic would you like to explore?"
+        
+        elif any(word in lower_msg for word in ['programming', 'code', 'python', 'javascript', 'html', 'css']):
+            return "Programming is all about practice and problem-solving! Start with understanding the logic, then implement it step by step. Don't forget to test your code and debug any errors. Which programming concept can I help clarify?"
+        
+        elif any(word in lower_msg for word in ['english', 'writing', 'grammar', 'essay']):
+            return "Great question about language and writing! Focus on clear structure, proper grammar, and expressing your ideas logically. Reading more also helps improve writing skills. What specific writing or language topic interests you?"
+        
+        else:
+            return f"I understand you're asking about '{message}'. While I'm having connection issues, I'm here to help with your studies! Try breaking down complex topics into smaller parts, use active recall, and practice regularly. What subject area would you like to focus on?"
     
     def generate_helpful_links(self, question, response):
         """Generate helpful YouTube and Google search links based on the question"""
@@ -105,18 +155,27 @@ studymate = StudyMateAI()
 def chat():
     try:
         data = request.get_json()
-        user_message = data.get('message', '')
+        user_message = data.get('message', '').strip()
         
         if not user_message:
             return jsonify({'error': 'No message provided'}), 400
         
+        print(f"Received message: {user_message}")
+        
         # Generate AI response
         result = studymate.generate_response(user_message)
+        
+        print(f"Sending response: {result}")
         
         return jsonify(result)
         
     except Exception as e:
-        return jsonify({'error': 'Internal server error'}), 500
+        print(f"Chat error: {e}")
+        return jsonify({
+            'response': 'I apologize, but I\'m experiencing technical difficulties. Please try again in a moment.',
+            'youtube_link': f"https://www.youtube.com/results?search_query={quote(user_message + ' tutorial')}",
+            'google_link': f"https://www.google.com/search?q={quote(user_message + ' explanation')}"
+        }), 200
 
 @app.route('/api/health', methods=['GET'])
 def health_check():

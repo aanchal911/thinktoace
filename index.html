@@ -1,434 +1,388 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ThinkToAce - Empower Your Learning</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThinkToAce - AI-Powered Learning Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Animated Background -->
-  <div class="animated-bg">
-    <div class="floating-shapes">
-      <div class="shape shape-1"></div>
-      <div class="shape shape-2"></div>
-      <div class="shape shape-3"></div>
-      <div class="shape shape-4"></div>
-      <div class="shape shape-5"></div>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
     </div>
-  </div>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg fixed-top glass-nav">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">
-        <i class="fas fa-graduation-cap"></i> ThinkToAce
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-          <li class="nav-item"><a class="nav-link" href="#courses">Courses</a></li>
-          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          <li class="nav-item">
-            <button class="btn btn-outline-primary ms-2" id="darkModeToggle">
-              <i class="fas fa-moon"></i>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-nav">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" data-aos="fade-right">
+                <i class="fas fa-graduation-cap me-2"></i>ThinkToAce
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
             </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section id="home" class="hero-section">
-    <div class="container">
-      <div class="row align-items-center min-vh-100">
-        <div class="col-lg-6" data-aos="fade-right">
-          <div class="hero-content">
-            <h1 class="hero-title">
-              Empower Your Learning with
-              <span class="gradient-text">ThinkToAce</span>
-            </h1>
-            <p class="hero-subtitle">
-              AI-powered education platform that revolutionizes the way you learn. 
-              Get personalized study paths, instant doubt solving, and interactive learning experiences.
-            </p>
-            <div class="hero-buttons">
-              <button class="btn btn-primary btn-lg me-3" onclick="openStudyMate()">
-                <i class="fas fa-robot"></i> Chat with StudyMate
-              </button>
-              <button class="btn btn-outline-primary btn-lg">
-                <i class="fas fa-play"></i> Watch Demo
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6" data-aos="fade-left">
-          <div class="hero-image">
-            <div class="floating-card card-1">
-              <i class="fas fa-brain"></i>
-              <span>AI Learning</span>
-            </div>
-            <div class="floating-card card-2">
-              <i class="fas fa-video"></i>
-              <span>Video Tutorials</span>
-            </div>
-            <div class="floating-card card-3">
-              <i class="fas fa-chart-line"></i>
-              <span>Progress Tracking</span>
-            </div>
-            <div class="hero-illustration">
-              <i class="fas fa-graduation-cap"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- StudyMate Chat Modal -->
-  <div class="modal fade" id="studyMateModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content chat-modal">
-        <div class="modal-header chat-header">
-          <div class="d-flex align-items-center">
-            <div class="chat-avatar">
-              <i class="fas fa-robot"></i>
-            </div>
-            <div class="ms-3">
-              <h5 class="modal-title mb-0">StudyMate</h5>
-              <small class="text-muted">Your AI Learning Assistant</small>
-            </div>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body chat-body">
-          <div id="chatMessages" class="chat-messages">
-            <div class="message bot-message">
-              <div class="message-avatar">
-                <i class="fas fa-robot"></i>
-              </div>
-              <div class="message-content">
-                <p>Hi! I'm StudyMate, your AI learning assistant. I can help you with:</p>
-                <ul>
-                  <li>Solving academic doubts</li>
-                  <li>Finding study resources</li>
-                  <li>Explaining complex concepts</li>
-                  <li>Providing YouTube tutorials</li>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#courses">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#quiz">Quiz</a></li>
+                    <li class="nav-item">
+                        <button class="btn btn-gradient-purple ms-2" onclick="toggleTheme()">
+                            <i class="fas fa-moon" id="theme-icon"></i>
+                        </button>
+                    </li>
                 </ul>
-                <p>What would you like to learn today?</p>
-              </div>
             </div>
-          </div>
         </div>
-        <div class="modal-footer chat-footer">
-          <div class="input-group">
-            <input type="text" id="chatInput" class="form-control" placeholder="Ask me anything about your studies...">
-            <button class="btn btn-primary" id="sendMessage">
-              <i class="fas fa-paper-plane"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    </nav>
 
-  <!-- Features Section -->
-  <section id="features" class="features-section py-5">
-    <div class="container">
-      <div class="text-center mb-5" data-aos="fade-up">
-        <h2 class="section-title">Powerful Features</h2>
-        <p class="section-subtitle">Everything you need for effective learning</p>
-      </div>
-      <div class="row g-4">
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-robot"></i>
-            </div>
-            <h4>AI-Powered Doubt Solver</h4>
-            <p>Get instant answers to your questions with our advanced AI assistant that understands context and provides detailed explanations.</p>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-video"></i>
-            </div>
-            <h4>Video Learning</h4>
-            <p>Access curated video content from YouTube and other platforms, perfectly integrated into your learning journey.</p>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-brain"></i>
-            </div>
-            <h4>Mind Maps</h4>
-            <p>Visualize complex concepts with interactive mind maps that help you understand relationships between topics.</p>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-chart-line"></i>
-            </div>
-            <h4>Progress Tracking</h4>
-            <p>Monitor your learning progress with detailed analytics and personalized recommendations for improvement.</p>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-users"></i>
-            </div>
-            <h4>Community Learning</h4>
-            <p>Connect with fellow learners, share knowledge, and collaborate on projects in our vibrant community.</p>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="600">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-mobile-alt"></i>
-            </div>
-            <h4>Mobile Friendly</h4>
-            <p>Learn anywhere, anytime with our responsive design that works perfectly on all devices.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Courses Section -->
-  <section id="courses" class="courses-section py-5">
-    <div class="container">
-      <div class="text-center mb-5" data-aos="fade-up">
-        <h2 class="section-title">Featured Courses</h2>
-        <p class="section-subtitle">Learn from curated video playlists and interactive content</p>
-      </div>
-      <div class="row g-4">
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-          <div class="course-card">
-            <div class="course-video">
-              <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9agiCUZYRsvtGTXdxkzPyItg" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="course-content">
-              <h4>Python Programming</h4>
-              <p>Complete Python course from basics to advanced concepts</p>
-              <div class="course-meta">
-                <span><i class="fas fa-video"></i> 100+ Videos</span>
-                <span><i class="fas fa-clock"></i> 50+ Hours</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-          <div class="course-card">
-            <div class="course-video">
-              <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9agwh1XjRt242xIpHhPT2llg" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="course-content">
-              <h4>Web Development</h4>
-              <p>HTML, CSS, JavaScript and modern web technologies</p>
-              <div class="course-meta">
-                <span><i class="fas fa-video"></i> 80+ Videos</span>
-                <span><i class="fas fa-clock"></i> 40+ Hours</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-          <div class="course-card">
-            <div class="course-video">
-              <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9aiQiOwthuSvinxoflmhRxM3" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="course-content">
-              <h4>Data Science</h4>
-              <p>Machine Learning, AI and Data Analysis with Python</p>
-              <div class="course-meta">
-                <span><i class="fas fa-video"></i> 60+ Videos</span>
-                <span><i class="fas fa-clock"></i> 35+ Hours</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- AI Quiz Section -->
-  <section class="quiz-section py-5">
-    <div class="container">
-      <div class="text-center mb-5" data-aos="fade-up">
-        <h2 class="section-title">AI-Generated Quiz</h2>
-        <p class="section-subtitle">Test your knowledge with personalized quizzes</p>
-      </div>
-      <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <div class="quiz-generator" data-aos="fade-up">
-            <div class="quiz-form">
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <input type="text" id="quizSubject" class="form-control" placeholder="Subject (e.g., Math, Science)">
+    <!-- Hero Section -->
+    <section id="home" class="hero-section min-vh-100 d-flex align-items-center">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                    <div class="hero-content">
+                        <h1 class="hero-title mb-4">
+                            Empower Your Learning with
+                            <span class="gradient-text">AI Technology</span>
+                        </h1>
+                        <p class="hero-subtitle mb-4">
+                            Meet StudyMate - your intelligent learning companion powered by advanced AI. 
+                            Get instant help, personalized quizzes, and access to premium educational content.
+                        </p>
+                        <div class="hero-buttons">
+                            <button class="btn btn-gradient-purple btn-lg me-3" data-bs-toggle="modal" data-bs-target="#studyMateModal">
+                                <i class="fas fa-robot me-2"></i>Chat with StudyMate
+                            </button>
+                            <button class="btn btn-outline-light btn-lg" onclick="scrollToSection('features')">
+                                <i class="fas fa-play me-2"></i>Explore Features
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                  <select id="quizMarks" class="form-select">
-                    <option value="">Select Total Marks</option>
-                    <option value="10">10 Marks</option>
-                    <option value="20">20 Marks</option>
-                    <option value="50">50 Marks</option>
-                    <option value="100">100 Marks</option>
-                  </select>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000">
+                    <div class="hero-visual">
+                        <div class="floating-card glass-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-brain fa-4x text-purple mb-3"></i>
+                                <h4>AI-Powered Learning</h4>
+                                <p>Experience the future of education</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                  <select id="quizDuration" class="form-select">
-                    <option value="">Select Duration</option>
-                    <option value="10">10 Minutes</option>
-                    <option value="20">20 Minutes</option>
-                    <option value="30">30 Minutes</option>
-                    <option value="60">60 Minutes</option>
-                  </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- StudyMate Chat Modal -->
+    <div class="modal fade" id="studyMateModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-container me-3">
+                            <i class="fas fa-robot fa-2x text-purple"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title mb-0 text-white">StudyMate AI</h5>
+                            <small class="text-light opacity-75">Your Learning Assistant</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-              </div>
-              <div class="text-center mt-4">
-                <button class="btn btn-primary btn-lg" onclick="generateQuiz()">
-                  <i class="fas fa-magic"></i> Generate Quiz
-                </button>
-              </div>
+                <div class="modal-body">
+                    <div id="chatMessages" class="chat-container">
+                        <div class="message bot-message" data-aos="fade-up">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <strong>StudyMate:</strong> Hi! I'm here to help you with your studies. Ask me anything about:
+                                <ul class="mt-2 mb-0">
+                                    <li>Academic concepts and explanations</li>
+                                    <li>Study tips and strategies</li>
+                                    <li>Finding educational resources</li>
+                                    <li>Homework and assignment help</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <div class="input-group chat-input-group">
+                        <input type="text" id="chatInput" class="form-control glass-input" placeholder="Ask me anything about your studies...">
+                        <button class="btn btn-gradient-purple" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </section>
 
-  <!-- Quiz Modal -->
-  <div class="modal fade" id="quizModal" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-      <div class="modal-content quiz-modal">
-        <div class="modal-header quiz-header">
-          <div class="d-flex align-items-center justify-content-between w-100">
-            <div>
-              <h5 class="modal-title mb-0" id="quizTitle">Quiz</h5>
-              <small class="text-muted" id="quizInfo">Subject • Duration • Marks</small>
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="section-title">✨ Amazing Features</h2>
+                <p class="section-subtitle">Discover what makes ThinkToAce special</p>
             </div>
-            <div class="quiz-timer">
-              <i class="fas fa-clock"></i>
-              <span id="timer">00:00</span>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card glass-card h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h5>AI StudyMate</h5>
+                        <p>Get instant help from our AI assistant for all your academic questions with smart resource suggestions.</p>
+                        <div class="feature-stats">
+                            <span class="badge bg-purple">24/7 Available</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card glass-card h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h5>Video Courses</h5>
+                        <p>Access curated YouTube playlists and educational video content from top educators worldwide.</p>
+                        <div class="feature-stats">
+                            <span class="badge bg-success">1000+ Videos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card glass-card h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h5>AI Quizzes</h5>
+                        <p>Generate personalized quizzes to test your knowledge and track progress with detailed analytics.</p>
+                        <div class="feature-stats">
+                            <span class="badge bg-warning">Smart Analytics</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body quiz-body">
-          <div id="quizQuestions" class="quiz-questions">
-            <!-- Questions will be loaded here -->
-          </div>
-        </div>
-        <div class="modal-footer quiz-footer">
-          <button class="btn btn-success btn-lg" onclick="submitQuiz()">
-            <i class="fas fa-check"></i> Submit Quiz
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Quick Actions -->
-  <section class="quick-actions py-5">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-lg-8 text-center" data-aos="fade-up">
-          <h2 class="mb-4">Ready to Start Learning?</h2>
-          <div class="d-flex flex-wrap justify-content-center gap-3">
-            <button class="btn btn-primary btn-lg" onclick="openStudyMate()">
-              <i class="fas fa-robot"></i> Chat with StudyMate
-            </button>
-            <button class="btn btn-outline-primary btn-lg" onclick="generateQuiz()">
-              <i class="fas fa-question-circle"></i> Take Quiz
-            </button>
-            <button class="btn btn-outline-primary btn-lg">
-              <i class="fas fa-play"></i> Watch Courses
-            </button>
-          </div>
+    <!-- Courses Section -->
+    <section id="courses" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="section-title">📚 Featured Courses</h2>
+                <p class="section-subtitle">Learn from the best educational content</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="course-card glass-card">
+                        <div class="course-video">
+                            <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9agiCUZYRsvtGTXdxkzPyItg" allowfullscreen></iframe>
+                        </div>
+                        <div class="course-content">
+                            <h5>Python Programming</h5>
+                            <p class="text-muted">Complete Python course from basics to advanced concepts</p>
+                            <div class="course-stats">
+                                <span><i class="fas fa-video"></i> 100+ Videos</span>
+                                <span><i class="fas fa-clock"></i> 50+ Hours</span>
+                            </div>
+                            <div class="course-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="ms-2">4.9</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="course-card glass-card">
+                        <div class="course-video">
+                            <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9agwh1XjRt242xIpHhPT2llg" allowfullscreen></iframe>
+                        </div>
+                        <div class="course-content">
+                            <h5>Web Development</h5>
+                            <p class="text-muted">HTML, CSS, JavaScript and modern web technologies</p>
+                            <div class="course-stats">
+                                <span><i class="fas fa-video"></i> 80+ Videos</span>
+                                <span><i class="fas fa-clock"></i> 40+ Hours</span>
+                            </div>
+                            <div class="course-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="ms-2">4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="course-card glass-card">
+                        <div class="course-video">
+                            <iframe src="https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9aiQiOwthuSvinxoflmhRxM3" allowfullscreen></iframe>
+                        </div>
+                        <div class="course-content">
+                            <h5>Data Science</h5>
+                            <p class="text-muted">Machine Learning and AI with Python</p>
+                            <div class="course-stats">
+                                <span><i class="fas fa-video"></i> 60+ Videos</span>
+                                <span><i class="fas fa-clock"></i> 35+ Hours</span>
+                            </div>
+                            <div class="course-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="ms-2">4.9</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer class="footer py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4 mb-4">
-          <h5><i class="fas fa-graduation-cap"></i> ThinkToAce</h5>
-          <p>Empowering learners worldwide with AI-driven education technology.</p>
-          <div class="social-links">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-          </div>
+    <!-- AI Quiz Section -->
+    <section id="quiz" class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center" data-aos="fade-up">
+                    <h2 class="section-title mb-4">🧠 AI-Generated Quiz</h2>
+                    <p class="section-subtitle mb-4">Test your knowledge with personalized quizzes generated by AI</p>
+                    <div class="quiz-generator glass-card">
+                        <div class="quiz-form">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" id="quizSubject" class="form-control glass-input" placeholder="Subject">
+                                        <label>Subject (e.g., Math, Science)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select id="quizMarks" class="form-select glass-input">
+                                            <option value="">Select Marks</option>
+                                            <option value="10">10 Marks</option>
+                                            <option value="20">20 Marks</option>
+                                            <option value="50">50 Marks</option>
+                                        </select>
+                                        <label>Total Marks</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select id="quizDuration" class="form-select glass-input">
+                                            <option value="">Select Duration</option>
+                                            <option value="10">10 Minutes</option>
+                                            <option value="20">20 Minutes</option>
+                                            <option value="30">30 Minutes</option>
+                                        </select>
+                                        <label>Duration</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-gradient-purple btn-lg mt-4" onclick="generateQuiz()">
+                                <i class="fas fa-magic me-2"></i>Generate Quiz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-2 col-md-6 mb-4">
-          <h6>Platform</h6>
-          <ul class="list-unstyled">
-            <li><a href="#">Features</a></li>
-            <li><a href="#">Courses</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">API</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-2 col-md-6 mb-4">
-          <h6>Support</h6>
-          <ul class="list-unstyled">
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">Community</a></li>
-            <li><a href="#">Status</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-2 col-md-6 mb-4">
-          <h6>Company</h6>
-          <ul class="list-unstyled">
-            <li><a href="#">About</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Press</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-2 col-md-6 mb-4">
-          <h6>Legal</h6>
-          <ul class="list-unstyled">
-            <li><a href="#">Privacy</a></li>
-            <li><a href="#">Terms</a></li>
-            <li><a href="#">Security</a></li>
-            <li><a href="#">Cookies</a></li>
-          </ul>
-        </div>
-      </div>
-      <hr class="my-4">
-      <div class="row align-items-center">
-        <div class="col-md-6">
-          <p class="mb-0">&copy; 2025 ThinkToAce. All rights reserved.</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-          <p class="mb-0">Made with <i class="fas fa-heart text-danger"></i> for learners</p>
-        </div>
-      </div>
-    </div>
-  </footer>
+    </section>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="script.js"></script>
+    <!-- Quiz Modal -->
+    <div class="modal fade" id="quizModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>
+                            <h5 class="modal-title text-white" id="quizTitle">Quiz</h5>
+                            <small class="text-light opacity-75" id="quizInfo">Subject • Duration • Marks</small>
+                        </div>
+                        <div class="timer-badge">
+                            <i class="fas fa-clock"></i> <span id="timer">00:00</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body quiz-body">
+                    <div id="quizQuestions"></div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn btn-gradient-purple btn-lg" onclick="submitQuiz()">
+                        <i class="fas fa-check me-2"></i>Submit Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <h5 class="text-white mb-3">
+                        <i class="fas fa-graduation-cap me-2"></i>ThinkToAce
+                    </h5>
+                    <p class="text-light opacity-75">Empowering learners worldwide with AI-driven education technology.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#courses">Courses</a></li>
+                        <li><a href="#quiz">Quiz</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <h5 class="text-white mb-3">Stay Updated</h5>
+                    <p class="text-light opacity-75 mb-3">Get the latest updates and educational content.</p>
+                    <div class="newsletter-form">
+                        <div class="input-group">
+                            <input type="email" class="form-control glass-input" placeholder="Enter your email">
+                            <button class="btn btn-gradient-purple">Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-light opacity-25">
+            <div class="text-center py-3">
+                <p class="text-light opacity-75 mb-0">&copy; 2025 ThinkToAce. Made with ❤️ for learners worldwide.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
